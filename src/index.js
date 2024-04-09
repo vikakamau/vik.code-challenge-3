@@ -1,14 +1,14 @@
 // Your code here
-let movie = "http://localhost:3000/films"// shows the localhost used
+let movie = "https://api-vik-server.onrender.com/films"// shows the localhost used
 //uses dom to declare function
 document.addEventListener('DOMContentLoaded', async(event)=>{
 const data = await showFilms()
 viewPoster(data)
 movieTitle(data)
-calculateTickets(data)
+calculateTickets()
 })
 ticketsFilm()
-
+//it uses a fetch function to the difffrent movie titles
 function showFilms(){
     return fetch(movie,{
         method:"GET",
@@ -50,11 +50,11 @@ function movieTitle(data){
               <div class="description">
                 <div id="film-info">${watch.description}</div>
                 <span id="showtime" class="ui label">${watch.showtime}</span>
-                <span id="ticket-num">${watch.capacity-watch.tickets_sold}</span> remaining tickets
+                <span id="ticket-num">${watch.capacity-watch.tickets_sold}remaining tickets</span>
               </div>
             </div>
             <div class="extra content">
-              <button id="buy-ticket" class="ui orange button">
+              <button id="buy-ticket" class="ui orange button" onclick="buyTicket(-1)">
                 Buy Ticket
               </button>
             </div>
@@ -81,29 +81,22 @@ function viewPoster(data){
     })
    })
   }
+   function buyTicket(buy){
+    const grey = document.getElementById("buy-ticket")
+    const number = document.getElementById("ticket-num")
+    const newNumber= parseInt(number.innerHTML)
+    number.innerHTML=newNumber
+    if(newNumber> 1){
+        number.innerHTML = newNumber + buy + 'remaining tickets'
+    }
+    else{
+        number.textContent='sold out'
+        grey.disabled = true
+    }
+
+   }
 
 
   
 
 
-function calculateTickets(data){
-    let availableTickets= document.getElementById("ticket-num");
-    let ticketsBought = document.getElementById("buy-ticket")
-    const buttonviews= document.querySelectorAll("button")
-    buttonviews.forEach(btn=> {
-        btn.addEventListener("click", (event) => {
-            let readyTickets = parseInt(availableTickets.innerHTML);
-            if(readyTickets>0){
-                readyTickets--;
-                availableTickets.innerHTML= readyTickets.toString();
-                if(readyTickets===0){
-                    availableTickets.textContent = "0"
-                    ticketsBought.disabled = true; 
-                    console.log("sold out")
-                    ticketsBought.appendChild(availableTickets)
-                }
-            }
-        console.log
-        })
-    });
-}
